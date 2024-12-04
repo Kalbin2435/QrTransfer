@@ -20,7 +20,6 @@ class QrsToFile:
         self.already_read = {}
         self.file_parts = 0
         self.full_file_data = b''
-        self.file_name = None
 
     def parseFilePart(self, data) -> bool:
         if(self._get_file_metadata(data) == False):
@@ -34,14 +33,16 @@ class QrsToFile:
 
     def _build_file_from_parts(self):
         for key in list(self.already_read.keys())[1:]:
-            self.full_file_data += self.already_read.pop(key)
+            data = self.already_read[key]
+            self.full_file_data += data
 
     def _parse_number(self, number):
         return int(number)
 
     def _write_to_dict(self, index, data):
             self.already_read[index] = data
-            print(f'{len(self.already_read)}/{self.file_parts if self.file_parts > 0 else "?"}')
+            if not index in self.already_read:
+                print(f'{len(self.already_read)}/{self.file_parts if self.file_parts > 0 else "?"}')
 
     def _get_file_metadata(self, data):
         number = self._parse_number(data[:4])
@@ -50,7 +51,7 @@ class QrsToFile:
         self.file_parts = int(data[4:8])
         name = data[8:].decode('ascii')
         self._write_to_dict(number,name)
-        self.file_name
+        self.file_name = name
 
     def _get_file_data(self, data):
         number = self._parse_number(data[:4])
@@ -60,7 +61,7 @@ class QrsToFile:
         except:
             self._write_to_dict(number,file_data)
 
-
+'''
 import os
 
 folder_path = r"C:\dev\QrTransfer\qr_data_Fasf"
@@ -73,4 +74,5 @@ for filename in os.listdir(folder_path):
         decoded_data = decode(qr_image)[0]
         if(mm.parseFilePart(decoded_data)):
             print("DONE")
-
+ 
+ '''
