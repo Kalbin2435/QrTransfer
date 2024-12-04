@@ -14,8 +14,18 @@ def translateFileToQrs(path):
     file_counter = _get_file_count()
     file_count = _number_to_padded_byte_number(file_counter)
     first_qr_data = number + file_count + filename
-    img = qrcode.make(first_qr_data)
-    img.save("0.png")
+    qrcodeMakeImage(first_qr_data,"0.png")
+
+def qrcodeMakeImage(data,path):
+    qr = qrcode.QRCode(version=None,
+                       error_correction=qrcode.ERROR_CORRECT_L,
+                       box_size=10,
+                       border=4
+                       )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image()
+    img.save(path)
 
 def _get_file_count():
     cwd = os.getcwd()
@@ -25,7 +35,7 @@ def _get_file_count():
 
 def _make_data_directory(path):
     filename_no_ext = os.path.splitext(os.path.basename(path))
-    dirname = filename_no_ext[0] + "_qr_data_" + _get_file_writable_date()
+    dirname = "qr_data_" + filename_no_ext[0] + "_" + _get_file_writable_date()
     os.mkdir(dirname)
     os.chdir(dirname)
 
@@ -34,23 +44,20 @@ def _number_to_padded_byte_number(number, digits=4):
     number = bytes(number, "ascii")
     return number
 
-def _createImagesFromData(data, bytes_per_images=1500):
+def _createImagesFromData(data, bytes_per_images=2900):
     index = 1
     if(len(data) >= bytes_per_images):
-        img = qrcode.make(_number_to_padded_byte_number(index) + data[:bytes_per_images])
-        img.save(str(index) + ".png")
+        qrcodeMakeImage(_number_to_padded_byte_number(index) + data[:bytes_per_images], str(index) + ".png")
         index += 1
         data = data[bytes_per_images:]
 
     while(len(data) >= bytes_per_images):
-        img = qrcode.make(_number_to_padded_byte_number(index) + data[:bytes_per_images])
-        img.save(str(index) + ".png")
+        qrcodeMakeImage(_number_to_padded_byte_number(index) + data[:bytes_per_images],str(index) + ".png")
         data = data[bytes_per_images:]
         index += 1
 
     if(len(data) >= 0):
-        img = qrcode.make(_number_to_padded_byte_number(index) + data)
-        img.save(str(index) + ".png")
+        qrcodeMakeImage(_number_to_padded_byte_number(index) + data,str(index) + ".png")
 
 def _get_file_writable_date():
     current_date = datetime.now()
