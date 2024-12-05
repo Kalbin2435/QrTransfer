@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
-from helper import decode_img
+from qr_lib.helper import decode_img
 from PIL import Image
 
 
@@ -32,7 +32,7 @@ class QrsToFile:
             return False
 
     def _build_file_from_parts(self):
-        for key in list(self.already_read.keys())[1:]:
+        for key in list(sorted(self.already_read.keys()))[1:]:
             data = self.already_read[key]
             self.full_file_data += data
 
@@ -40,9 +40,9 @@ class QrsToFile:
         return int(number)
 
     def _write_to_dict(self, index, data):
-            self.already_read[index] = data
             if not index in self.already_read:
-                print(f'{len(self.already_read)}/{self.file_parts if self.file_parts > 0 else "?"}')
+                print(f'{len(self.already_read) + 1}/{self.file_parts if self.file_parts > 0 else "?"}')
+            self.already_read[index] = data
 
     def _get_file_metadata(self, data):
         number = self._parse_number(data[:4])
@@ -61,18 +61,3 @@ class QrsToFile:
         except:
             self._write_to_dict(number,file_data)
 
-'''
-import os
-
-folder_path = r"C:\dev\QrTransfer\qr_data_Fasf"
-mm = QrsToFile()
-# Iterate over files in the folder
-for filename in os.listdir(folder_path):
-    file_path = os.path.join(folder_path, filename)
-    if os.path.isfile(file_path):  # Check if it is a file
-        qr_image = Image.open(file_path)
-        decoded_data = decode(qr_image)[0]
-        if(mm.parseFilePart(decoded_data)):
-            print("DONE")
- 
- '''
