@@ -1,6 +1,5 @@
-from qr_lib import FileToQr, camera
+from qr_lib import FileToQr 
 import qrcode
 
 if __name__ == "__main__":
-    pass
-    # res = FileToQr.translateFileToQrs(r"C:\temp\test.txt")
+    res = FileToQr.translateFileToQrs(r"C:\dev\QrTransfer\QrTransfer.rar")

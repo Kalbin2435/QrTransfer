@@ -1,4 +1,5 @@
 import cv2
+import base64
 import numpy as np
 from pyzbar.pyzbar import decode
 from qr_lib.helper import decode_img
@@ -35,6 +36,7 @@ class QrsToFile:
         for key in list(sorted(self.already_read.keys()))[1:]:
             data = self.already_read[key]
             self.full_file_data += data
+        self.full_file_data = base64.b64decode(self.full_file_data)
 
     def _parse_number(self, number):
         return int(number)

@@ -1,13 +1,17 @@
+import base64
 import os
 from datetime import datetime
 import qrcode
+from qrcode.util import QRData
+from qrcode.util import MODE_8BIT_BYTE
 
 
 def translateFileToQrs(path):
     _make_data_directory(path)
     with open(path, "rb") as file:
         data = file.read()
-        _createImagesFromData(data)
+        ascii_bytes = base64.b64encode(data)
+        _createImagesFromData(ascii_bytes)
 
     number = _number_to_padded_byte_number(0)
     filename = bytes(os.path.basename(path), "ascii")
@@ -22,7 +26,8 @@ def qrcodeMakeImage(data,path):
                        box_size=10,
                        border=4
                        )
-    qr.add_data(data)
+    # def __init__(self, data, mode=None, check_data=True):
+    qr.add_data(data,optimize=0)
     qr.make(fit=True)
     img = qr.make_image()
     img.save(path)
