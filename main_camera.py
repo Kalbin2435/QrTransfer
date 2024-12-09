@@ -5,7 +5,7 @@ from pyzbar.pyzbar import decode
 import sys
 
 
-wow = QrsToFile()
+QrToFileHandler = QrsToFile()
 
 def decoder(image):
     gray_img = cv2.cvtColor(image,0)
@@ -19,9 +19,9 @@ def decoder(image):
 
         barcodeData = obj.data
         barcodeType = obj.type
-        if(wow.parseFilePart(barcodeData)):
-                with open(wow.file_name,"wb") as file:
-                    file.write(wow.full_file_data)
+        if(QrToFileHandler.parseFilePart(barcodeData)):
+                with open(QrToFileHandler.file_name,"wb") as file:
+                    file.write(QrToFileHandler.full_file_data)
                 sys.exit()
         
         
