@@ -37,7 +37,7 @@ def translateFileToQrs(path):
 def _qrcodeMakeImage(data):
     qr = qrcode.QRCode(
         version=None,
-        error_correction=qrcode.ERROR_CORRECT_L,
+        error_correction=qrcode.ERROR_CORRECT_M,
         box_size=10,
         border=4
     )
@@ -58,7 +58,7 @@ def _createImageBytesFromData(chunk_data):
     img.save(byte_io) 
     return byte_io.getvalue() 
 
-def _createImagesFromData(data, bytes_per_image=2900):
+def _createImagesFromData(data, bytes_per_image=2300):
     index = 1
     chunks = []
     while len(data) > 0:
